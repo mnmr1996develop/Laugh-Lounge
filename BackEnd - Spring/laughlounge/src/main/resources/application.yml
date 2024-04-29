@@ -1,1 +1,14 @@
-spring.application.name=laughlounge
+server:
+  port: 8080
+  error:
+    include-message: always
+
+info:
+  application:
+    name: laugh-lounge
+    author: Michael Ricahrds
+    descriptions: A site to relax and share funny photos and text with your friends
+
+spring:
+  profiles:
+    active: test-mysql

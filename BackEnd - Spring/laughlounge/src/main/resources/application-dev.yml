@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    username: mnmr1996develop
+    password: mnmr1996develop
+    url: jdbc:postgresql://localhost:5432/laugh_lounge
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+    database: postgresql
+  main:
+    web-application-type: servlet
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  codec:
+    max-in-memory-size: 10MB
