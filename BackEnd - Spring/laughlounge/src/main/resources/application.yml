@@ -11,4 +11,4 @@ info:
 
 spring:
   profiles:
-    active: test-mysql
+    active: dev
