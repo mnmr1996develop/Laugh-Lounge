@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: postgres_container
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: mnmr1996develop
+      POSTGRES_PASSWORD: mnmr1996develop
+      POSTGRES_DB: laugh_lounge
+    ports:
+      - "5432:5432"
+    volumes:
+      - laugh_lounge:/data/postgres
+    networks:
+      - db
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mnmr1996develop@admin.com
+      PGADMIN_DEFAULT_PASSWORD: mnmr1996develop
+
+networks:
+  db:
+    driver: bridge
+volumes:
+  laugh_lounge:
