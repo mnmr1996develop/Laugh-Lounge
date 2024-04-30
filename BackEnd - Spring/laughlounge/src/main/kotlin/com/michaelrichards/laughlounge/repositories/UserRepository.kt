@@ -6,4 +6,6 @@ import java.util.UUID
 
 interface UserRepository: JpaRepository<mUser, UUID>{
 
+    fun findByUsername(username: String): mUser?
 }
+

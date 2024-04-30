@@ -3,25 +3,23 @@ package com.michaelrichards.laughlounge.controller
 import com.michaelrichards.laughlounge.domain.request.RegistrationRequest
 import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
 import com.michaelrichards.laughlounge.service.AuthenticationService
-import com.michaelrichards.laughlounge.service.UserService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-private const val USER_BASE_PATH_V1 = "api/v1/users"
+private const val AUTH_BASE_PATH = "api/v1/auth"
 
 @RestController
-@RequestMapping(USER_BASE_PATH_V1)
-class UserController(
-    private val userService: UserService
+@RequestMapping(AUTH_BASE_PATH)
+class AuthController(
+    private val authenticationService: AuthenticationService
 ) {
 
-    @GetMapping
-    fun getAllUsers(): ResponseEntity<List<UserDetailsResponse>> =
-        ResponseEntity.ok().body(userService.getAllUsers())
-
+    @PostMapping("/register")
+    fun registerUser(
+        @RequestBody registrationRequest: RegistrationRequest
+    ): ResponseEntity<UserDetailsResponse> = ResponseEntity.ok().body(authenticationService.registerUser(registrationRequest))
 
 }

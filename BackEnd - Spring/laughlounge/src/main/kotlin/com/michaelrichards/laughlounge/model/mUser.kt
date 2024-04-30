@@ -31,9 +31,11 @@ class mUser (
 
     @field:Size(min = 5, message = "Username has to be at least 5 characters long")
     @field:Size(max = 30, message = "Username has to be 30 characters or less")
+    @Column(unique = true)
     var username: String,
 
 
+    @Column(unique = true)
     @field:Email(message = "Enter proper email")
     var email: String,
 
