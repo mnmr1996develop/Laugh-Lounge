@@ -11,10 +11,17 @@ class UserService(
 ) {
 
     fun getUserByUsername(username: String): UserDetailsResponse =
-        (userRepository.findByUsername(username) ?: throw Exception()).mapToDto()
+        mUser.mapToDto(userRepository.findByUsername(username) ?: throw Exception())
 
     fun getAllUsers(): List<UserDetailsResponse> = userRepository.findAll().map {
-        it.mapToDto()
+        mUser.mapToDto(it)
+    }
+
+    fun banUser(username: String): Boolean {
+        userRepository.findByUsername(username)
+
+        // TODO: Implement a banning account system
+        return true
     }
 
 

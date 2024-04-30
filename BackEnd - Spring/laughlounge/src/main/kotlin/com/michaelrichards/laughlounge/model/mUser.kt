@@ -1,11 +1,7 @@
 package com.michaelrichards.laughlounge.model
 
 import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Past
 import jakarta.validation.constraints.Size
@@ -47,13 +43,20 @@ class mUser (
 
 
 ){
-    fun mapToDto(): UserDetailsResponse{
-        return UserDetailsResponse(
-            firstName = this.firstName,
-            lastName = this.lastName,
-            email = this.email,
-            username = this.username,
-            birthday = this.birthday
-        )
+    @OneToMany(mappedBy = "mUser", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val posts: MutableList<Post> = mutableListOf()
+
+
+    companion object{
+        fun mapToDto(user: mUser): UserDetailsResponse{
+            return UserDetailsResponse(
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email,
+                username = user.username,
+                birthday = user.birthday
+            )
+        }
     }
+
 }

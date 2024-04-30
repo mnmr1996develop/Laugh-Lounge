@@ -29,7 +29,7 @@ class AuthenticationService(
 
         userRepository.save(user)
 
-        return user.mapToDto()
+        return mUser.mapToDto(user)
     }
 
 
