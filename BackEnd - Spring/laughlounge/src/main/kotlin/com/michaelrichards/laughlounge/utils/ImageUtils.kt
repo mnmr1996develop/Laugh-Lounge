@@ -2,8 +2,13 @@ package com.michaelrichards.laughlounge.utils
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream
 import org.springframework.stereotype.Component
+import java.awt.Color
+import java.awt.Font
+import java.awt.image.BufferedImage
 import java.util.zip.Deflater
 import java.util.zip.Inflater
+import javax.imageio.ImageIO
+import kotlin.random.Random
 
 @Component
 class ImageUtils {
@@ -53,6 +58,43 @@ class ImageUtils {
 
             }
             return outputStream.toByteArray()
+        }
+
+        fun createBasicProfileImage(letter: Char, color: Color? = null): ByteArray {
+            val width = 1000
+            val height = 1000
+
+            val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+            val g2d = bufferedImage.createGraphics()
+
+
+
+
+            val redValue = Random.nextInt(255)
+            val greenValue = Random.nextInt(255)
+            val blueValue = Random.nextInt(255)
+
+            g2d.color = color ?: Color(redValue, greenValue, blueValue)
+            g2d.fillRect(0, 0, width, height)
+
+            g2d.color = Color.BLACK
+
+
+            val font = Font("Arial", Font.ITALIC, 400)
+            g2d.font = font
+
+            val fm = g2d.fontMetrics
+            val x = (width - fm.stringWidth(letter.toString())) / 2
+            val y = (height - fm.height) / 2 + fm.ascent
+            g2d.drawString(letter.toString(), x, y)
+
+
+            g2d.dispose()
+
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            ImageIO.write(bufferedImage, "png", byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            return byteArray
         }
     }
 }

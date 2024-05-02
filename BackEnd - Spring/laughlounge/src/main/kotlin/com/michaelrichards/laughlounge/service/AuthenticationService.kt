@@ -2,23 +2,31 @@ package com.michaelrichards.laughlounge.service
 
 import com.michaelrichards.laughlounge.domain.request.RegistrationRequest
 import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
+import com.michaelrichards.laughlounge.model.Image
 import com.michaelrichards.laughlounge.model.mUser
 import com.michaelrichards.laughlounge.repositories.UserRepository
+import com.michaelrichards.laughlounge.utils.EnvironmentUtil
+import com.michaelrichards.laughlounge.utils.ImageUtils
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 @Service
 class AuthenticationService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val imageService: ImageService,
+    private val environmentUtil: EnvironmentUtil
 ) {
 
 
 
 
+    @Transactional
     fun registerUser(
         registrationRequest: RegistrationRequest
     ): UserDetailsResponse {
+
 
 
         val user = mUser(
@@ -30,9 +38,17 @@ class AuthenticationService(
             birthday = registrationRequest.birthday
         )
 
+        val defaultProfileImage = Image(
+            imageData = ImageUtils.compressImage(ImageUtils.createBasicProfileImage(user.firstName[0].uppercaseChar())),
+            type = "image/png",
+        )
+
+        user.profileImage = imageService.saveImage(defaultProfileImage)
         userRepository.save(user)
 
-        return mUser.mapToDto(user, "")
+
+
+        return mUser.mapToDto(user,  user.profileImage?.uuid?.let { environmentUtil.buildImageLink(it) })
     }
 
 

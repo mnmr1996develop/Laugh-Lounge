@@ -32,4 +32,6 @@ class ImageService(
         return Pair(ImageUtils.decompressImage(image.imageData ?: throw Exception()), image.type)
     }
 
+    fun saveImage(image: Image): Image = imageRepository.save(image)
+
 }
