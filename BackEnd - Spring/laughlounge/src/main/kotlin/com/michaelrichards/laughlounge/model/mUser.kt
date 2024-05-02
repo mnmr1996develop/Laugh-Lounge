@@ -5,8 +5,11 @@ import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Past
 import jakarta.validation.constraints.Size
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import java.time.LocalDate
 import java.util.UUID
+
 
 @Entity
 class mUser (
@@ -41,22 +44,27 @@ class mUser (
     @field:Past(message = "birthday cannot be in the future")
     var birthday: LocalDate,
 
-
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "image_uuid")
+    var profileImage: Image? = null,
 ){
-    @OneToMany(mappedBy = "mUser", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val posts: MutableList<Post> = mutableListOf()
+
 
 
     companion object{
-        fun mapToDto(user: mUser): UserDetailsResponse{
+        fun mapToDto(user: mUser, profileImageLink: String?): UserDetailsResponse{
+
+
             return UserDetailsResponse(
                 firstName = user.firstName,
                 lastName = user.lastName,
                 email = user.email,
                 username = user.username,
-                birthday = user.birthday
+                birthday = user.birthday,
+                profileImageLink = profileImageLink
             )
         }
     }
+
 
 }

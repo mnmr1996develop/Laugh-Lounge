@@ -14,9 +14,12 @@ class AuthenticationService(
 ) {
 
 
+
+
     fun registerUser(
         registrationRequest: RegistrationRequest
     ): UserDetailsResponse {
+
 
         val user = mUser(
             firstName = filterWhiteSpace(registrationRequest.firstName),
@@ -29,7 +32,7 @@ class AuthenticationService(
 
         userRepository.save(user)
 
-        return mUser.mapToDto(user)
+        return mUser.mapToDto(user, "")
     }
 
 
@@ -45,5 +48,5 @@ class AuthenticationService(
         {}
     }
 
-    fun filterWhiteSpace(string: String) = string.filter { it.isWhitespace() }
+    fun filterWhiteSpace(string: String) = string.filterNot { it.isWhitespace() }
 }

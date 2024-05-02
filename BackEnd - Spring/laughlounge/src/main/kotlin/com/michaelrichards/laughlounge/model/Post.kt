@@ -1,6 +1,8 @@
 package com.michaelrichards.laughlounge.model
 
+import com.michaelrichards.laughlounge.domain.responses.PostResponse
 import jakarta.persistence.*
+import java.util.UUID
 
 @Entity
 class Post(
@@ -8,23 +10,22 @@ class Post(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    var postId: Long? = null,
+    var postId: UUID? = null,
 
     @Column(name = "text", nullable = true)
     var text: String? = null,
 
-    @Lob
-    @Column(name = "image_data", length = 1000)
-    var image: ByteArray? = null,
-
-    @ManyToOne(cascade = [CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH])
-    @JoinColumn(name = "m_user_id")
-    val mUser: mUser? = null
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "image_uuid")
+    var image: Image? = null
 ) {
 
     companion object {
-        fun mapToDTO(post: Post){
-
-        }
+        fun mapToDTO(post: Post): PostResponse = PostResponse(
+            text = post.text,
+            imageLink = post.image?.uuid!!
+        )
     }
+
+
 }

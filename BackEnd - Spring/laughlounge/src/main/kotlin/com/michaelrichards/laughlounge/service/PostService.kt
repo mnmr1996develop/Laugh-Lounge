@@ -7,7 +7,5 @@ import org.springframework.stereotype.Service
 class PostService(
     private val postRepository: PostRepository
 ) {
-    fun findPostsByUser() {
-        TODO("Not yet implemented")
-    }
+
 }

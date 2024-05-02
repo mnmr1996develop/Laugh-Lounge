@@ -5,13 +5,9 @@ import com.michaelrichards.laughlounge.model.mUser
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
-interface PostRepository: JpaRepository<Post, Long>{
+interface PostRepository: JpaRepository<Post, UUID>{
 
-
-    fun findByMUser(mUser: mUser): List<Post>
-
-
-    fun findByMUserPageable(mUser: mUser, pageable: Pageable): List<Post>
 }

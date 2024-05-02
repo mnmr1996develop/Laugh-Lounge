@@ -1,9 +1,11 @@
 package com.michaelrichards.laughlounge.utils
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream
+import org.springframework.stereotype.Component
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 
+@Component
 class ImageUtils {
 
     companion object {
