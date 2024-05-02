@@ -17,7 +17,12 @@ class Post(
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "image_uuid")
-    var image: Image? = null
+    var image: Image? = null,
+
+    @ManyToOne(cascade = [CascadeType.REFRESH, CascadeType.DETACH])
+    @JoinColumn(name = "post_author_id")
+    var postAuthor: User? = null
+
 ) {
 
     companion object {
@@ -26,6 +31,7 @@ class Post(
             imageLink = post.image?.uuid!!
         )
     }
+
 
 
 }

@@ -9,6 +9,14 @@ info:
     author: Michael Ricahrds
     descriptions: A site to relax and share funny photos and text with your friends
 
+application:
+  security:
+    jwt:
+      secret-key: 0af8dc2d7c5e0e167d723d75ab45b965b7b50839058371b2a1bafb0d727415e0
+      expiration: 86400000
+      refresh:
+        expiration: 604800000
+
 spring:
   profiles:
-    active: dev
+    active: test-mysql

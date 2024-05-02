@@ -1,8 +1,12 @@
 package com.michaelrichards.laughlounge.controller
 
+import com.michaelrichards.laughlounge.domain.request.AuthenticationRequest
 import com.michaelrichards.laughlounge.domain.request.RegistrationRequest
+import com.michaelrichards.laughlounge.domain.responses.AuthenticationResponse
 import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
 import com.michaelrichards.laughlounge.service.AuthenticationService
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,6 +24,17 @@ class AuthController(
     @PostMapping("/register")
     fun registerUser(
         @RequestBody registrationRequest: RegistrationRequest
-    ): ResponseEntity<UserDetailsResponse> = ResponseEntity.ok().body(authenticationService.registerUser(registrationRequest))
+    ): ResponseEntity<AuthenticationResponse> = ResponseEntity.ok().body(authenticationService.registerUser(registrationRequest))
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody registerRequest: AuthenticationRequest
+    ): ResponseEntity<AuthenticationResponse> = ResponseEntity.ok(authenticationService.login(registerRequest))
+
+    @PostMapping("/refresh-token")
+    fun refreshToken(
+        request: HttpServletRequest,
+        response: HttpServletResponse
+    ) = authenticationService.refreshToken(request, response)
 
 }

@@ -12,7 +12,7 @@ class Image(
     var uuid: UUID? = null,
 
     @Lob
-    @Column(name = "image_data")
+    @Column(name = "image_data", length = 3000)
     var imageData: ByteArray? = null,
 
     @Column(name = "type")
