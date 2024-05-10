@@ -3,7 +3,6 @@ package com.michaelrichards.laughlounge.controller
 import com.michaelrichards.laughlounge.domain.request.AuthenticationRequest
 import com.michaelrichards.laughlounge.domain.request.RegistrationRequest
 import com.michaelrichards.laughlounge.domain.responses.AuthenticationResponse
-import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
 import com.michaelrichards.laughlounge.service.AuthenticationService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 private const val AUTH_BASE_PATH = "api/v1/auth"
 
@@ -21,17 +21,18 @@ class AuthController(
     private val authenticationService: AuthenticationService
 ) {
 
-    @PostMapping("/register")
+    @PostMapping("register")
     fun registerUser(
         @RequestBody registrationRequest: RegistrationRequest
-    ): ResponseEntity<AuthenticationResponse> = ResponseEntity.ok().body(authenticationService.registerUser(registrationRequest))
+    ): ResponseEntity<AuthenticationResponse> = ResponseEntity.created(URI.create("$AUTH_BASE_PATH/register"))
+        .body(authenticationService.registerUser(registrationRequest))
 
-    @PostMapping("/login")
+    @PostMapping("login")
     fun login(
         @RequestBody registerRequest: AuthenticationRequest
     ): ResponseEntity<AuthenticationResponse> = ResponseEntity.ok(authenticationService.login(registerRequest))
 
-    @PostMapping("/refresh-token")
+    @PostMapping("refresh-token")
     fun refreshToken(
         request: HttpServletRequest,
         response: HttpServletResponse

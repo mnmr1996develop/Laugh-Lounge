@@ -8,6 +8,7 @@ data class RegistrationRequest(
     val username: String,
     val email: String,
     val birthday: LocalDate,
+    val isProfilePublic: Boolean,
     val password: String
 ) {
 }

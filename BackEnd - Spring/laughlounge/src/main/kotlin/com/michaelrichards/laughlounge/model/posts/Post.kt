@@ -1,6 +1,8 @@
-package com.michaelrichards.laughlounge.model
+package com.michaelrichards.laughlounge.model.posts
 
 import com.michaelrichards.laughlounge.domain.responses.PostResponse
+import com.michaelrichards.laughlounge.model.Image
+import com.michaelrichards.laughlounge.model.user.User
 import jakarta.persistence.*
 import java.util.UUID
 
@@ -21,9 +23,11 @@ class Post(
 
     @ManyToOne(cascade = [CascadeType.REFRESH, CascadeType.DETACH])
     @JoinColumn(name = "post_author_id")
-    var postAuthor: User? = null
+    var postAuthor: User? = null,
 
-) {
+
+
+    ) {
 
     companion object {
         fun mapToDTO(post: Post): PostResponse = PostResponse(

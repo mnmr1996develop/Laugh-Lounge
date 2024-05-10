@@ -3,7 +3,6 @@ package com.michaelrichards.laughlounge.config
 import com.michaelrichards.laughlounge.service.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -47,6 +46,7 @@ class SecurityConfig(
         .authorizeHttpRequests { authorize ->
             authorize
                 .requestMatchers( "/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/images/**").permitAll()
                 .anyRequest().authenticated()
         }
         .authenticationProvider(authenticationProvider())

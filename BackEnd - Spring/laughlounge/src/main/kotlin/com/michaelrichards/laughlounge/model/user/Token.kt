@@ -1,4 +1,4 @@
-package com.michaelrichards.laughlounge.model
+package com.michaelrichards.laughlounge.model.user
 
 import jakarta.persistence.*
 import java.util.UUID
@@ -25,8 +25,6 @@ class Token(
 ) {
 
     fun isTokenValid() = !isRevoked && !isExpired
-
-
 
 }
 

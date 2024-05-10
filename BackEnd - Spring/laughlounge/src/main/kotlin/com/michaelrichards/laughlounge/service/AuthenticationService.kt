@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.michaelrichards.laughlounge.domain.request.AuthenticationRequest
 import com.michaelrichards.laughlounge.domain.request.RegistrationRequest
 import com.michaelrichards.laughlounge.domain.responses.AuthenticationResponse
-import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
-import com.michaelrichards.laughlounge.model.Image
-import com.michaelrichards.laughlounge.model.Role
-import com.michaelrichards.laughlounge.model.Token
-import com.michaelrichards.laughlounge.model.User
+import com.michaelrichards.laughlounge.model.*
+import com.michaelrichards.laughlounge.model.user.Role
+import com.michaelrichards.laughlounge.model.user.Token
+import com.michaelrichards.laughlounge.model.user.TrackedUserData
+import com.michaelrichards.laughlounge.model.user.User
 import com.michaelrichards.laughlounge.repositories.TokenRepository
 import com.michaelrichards.laughlounge.repositories.UserRepository
 import com.michaelrichards.laughlounge.utils.EnvironmentUtil
@@ -59,8 +59,17 @@ class AuthenticationService(
             username = filterWhiteSpace(registrationRequest.username),
             password = passwordEncoder.encode(filterWhiteSpace(registrationRequest.password)),
             birthday = registrationRequest.birthday,
+            isProfilePublic = registrationRequest.isProfilePublic,
             accountCreatedAt = LocalDateTime.now()
         )
+
+        val trackedUserData = TrackedUserData(
+            lastRequest = LocalDateTime.now(),
+            amountOfAPIRequest = 1,
+            user = user
+        )
+
+        user.trackedUserData = trackedUserData
 
         val defaultProfileImage = Image(
             imageData = ImageUtils.compressImage(ImageUtils.createBasicProfileImage(user.firstName[0].uppercaseChar())),
@@ -101,6 +110,10 @@ class AuthenticationService(
         val user = userRepository.findByUsernameIgnoreCase(authenticationRequest.username)
             ?: throw UsernameNotFoundException("${authenticationRequest.username} Invalid username")
 
+        user.trackedUserData?.let {
+            it.amountOfAPIRequest += 1
+        }
+        userRepository.save(user)
         val jwtToken = jwtService.generateToken(userDetails = user)
         val refreshToken = jwtService.generateRefreshToken(user)
         //revokeAllTokens(user)

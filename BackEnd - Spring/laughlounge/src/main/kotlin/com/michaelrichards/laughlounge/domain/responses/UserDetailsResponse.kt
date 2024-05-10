@@ -8,5 +8,8 @@ data class UserDetailsResponse(
     val email: String,
     val username: String,
     val birthday: LocalDate,
-    val profileImageLink: String?
+    val isProfilePublic: Boolean,
+    val profileImageLink: String?,
+    val isFollowingCaller: Boolean,
+    val callerIsFollowing: Boolean
 )
