@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.michaelrichards.laughlounge.domain.request.AuthenticationRequest
 import com.michaelrichards.laughlounge.domain.request.RegistrationRequest
 import com.michaelrichards.laughlounge.domain.responses.AuthenticationResponse
+import com.michaelrichards.laughlounge.exceptions.authExceptions.AuthExceptions
 import com.michaelrichards.laughlounge.model.*
 import com.michaelrichards.laughlounge.model.user.Role
 import com.michaelrichards.laughlounge.model.user.Token
@@ -32,6 +33,7 @@ import java.time.temporal.ChronoUnit
 @Service
 class AuthenticationService(
     private val userRepository: UserRepository,
+    private val userVerificationService: UserVerificationService,
     private val imageService: ImageService,
     private val environmentUtil: EnvironmentUtil,
     private val tokenRepository: TokenRepository,
@@ -51,7 +53,7 @@ class AuthenticationService(
     ): AuthenticationResponse {
 
 
-        validateRegisterRequest(registrationRequest)
+        userVerificationService.validateRegisterRequest(registrationRequest)
         val user = User(
             firstName = filterWhiteSpace(registrationRequest.firstName),
             lastName = filterWhiteSpace(registrationRequest.lastName),
@@ -87,17 +89,6 @@ class AuthenticationService(
     }
 
 
-    private fun validateRegisterRequest(registrationRequest: RegistrationRequest){
-            verifyAge(registrationRequest.birthday)
-    }
-
-
-    private fun verifyAge(birthday: LocalDate){
-        val age = ChronoUnit.YEARS.between(birthday, LocalDate.now())
-
-        if (age < 13 || age > 150)
-        {}
-    }
 
     fun login(authenticationRequest: AuthenticationRequest): AuthenticationResponse {
         authenticationManager.authenticate(

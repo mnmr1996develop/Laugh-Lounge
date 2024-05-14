@@ -2,6 +2,7 @@ package com.michaelrichards.laughlounge.model.following
 
 import com.michaelrichards.laughlounge.model.user.User
 import jakarta.persistence.*
+import java.time.LocalDateTime
 import java.util.UUID
 
 
@@ -20,6 +21,7 @@ class BlockedUsers(
     @JoinColumn(name = "blocked_by_user_id")
     var blockedBy: User? = null,
 
+    val blockedDate: LocalDateTime
 ) {
 
 

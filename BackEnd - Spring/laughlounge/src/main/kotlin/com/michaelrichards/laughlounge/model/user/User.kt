@@ -2,6 +2,7 @@ package com.michaelrichards.laughlounge.model.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.michaelrichards.laughlounge.domain.responses.UserDetailsResponse
+import com.michaelrichards.laughlounge.domain.responses.UserFollowRequestDataResponse
 import com.michaelrichards.laughlounge.model.Image
 import com.michaelrichards.laughlounge.model.following.BlockedUsers
 import com.michaelrichards.laughlounge.model.following.FollowRelations
@@ -18,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 
 
 @Entity
@@ -28,12 +30,12 @@ class User(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val userId: Long? = null,
 
-    @field:Size(min = 5, message = "First name has to be at least 2 characters long")
+    @field:Size(min = 2, message = "First name has to be at least 2 characters long")
     @field:Size(max = 30, message = "First name has to be 30 characters or less")
     @Column(nullable = false)
     var firstName: String,
 
-    @field:Size(min = 5, message = "Last name has to be at least 2 characters long")
+    @field:Size(min = 2, message = "Last name has to be at least 2 characters long")
     @field:Size(max = 30, message = "Last name has to be 30 characters or less")
     @Column(nullable = false)
     var lastName: String,
@@ -50,7 +52,7 @@ class User(
     var email: String,
 
     @field:JsonIgnore
-    private var password: String,
+    @JvmField var password: String,
 
     @Column(nullable = false)
     var isProfilePublic: Boolean,
@@ -78,13 +80,13 @@ class User(
 
     var accountCreatedAt: LocalDateTime,
 
-    private var isAccountNonExpired: Boolean = true,
+    @JvmField var isAccountNonExpired: Boolean = true,
 
-    private var isAccountNonLocked: Boolean = true,
+    @JvmField var isAccountNonLocked: Boolean = true,
 
-    private var isCredentialsNonExpired: Boolean = true,
+    @JvmField var isCredentialsNonExpired: Boolean = true,
 
-    private var isEnabled: Boolean = true,
+    @JvmField var isEnabled: Boolean = true,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], optional = false, orphanRemoval = true)
     var trackedUserData: TrackedUserData? = null,
@@ -102,11 +104,11 @@ class User(
     var followers: MutableList<FollowRelations> = mutableListOf()
 
     @JsonIgnore
-    @OneToMany(mappedBy = "followRequester", orphanRemoval = true)
+    @OneToMany(mappedBy = "followRequester", orphanRemoval = true, fetch = FetchType.EAGER)
     var followRequests: MutableList<FollowRequest> = mutableListOf()
 
     @JsonIgnore
-    @OneToMany(mappedBy = "followRequester", orphanRemoval = true)
+    @OneToMany(mappedBy = "followRequester", orphanRemoval = true, fetch = FetchType.EAGER)
     var followRequestsSent: MutableList<FollowRequest> = mutableListOf()
 
     @JsonIgnore
@@ -184,8 +186,34 @@ class User(
 
 
     companion object {
-        fun mapToDto(user: User, environmentUtil: EnvironmentUtil, isFollowingCaller: Boolean, callerIsFollowing: Boolean): UserDetailsResponse {
+        fun mapToUserDetailsDto(
+            user: User,
+            environmentUtil: EnvironmentUtil,
+            isFollowingCaller: Boolean,
+            callerIsFollowing: Boolean
+        ): UserDetailsResponse {
             return UserDetailsResponse(
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email,
+                username = user.username,
+                birthday = user.birthday,
+                isProfilePublic = user.isProfilePublic,
+                profileImageLink = user.profileImage?.uuid?.let { environmentUtil.buildImageLink(it) },
+                isFollowingCaller = isFollowingCaller,
+                callerIsFollowing = callerIsFollowing
+            )
+        }
+
+        fun mapToFollowRequestDto(
+            user: User,
+            requestId: UUID,
+            environmentUtil: EnvironmentUtil,
+            isFollowingCaller: Boolean,
+            callerIsFollowing: Boolean
+        ): UserFollowRequestDataResponse {
+            return UserFollowRequestDataResponse(
+                requestId = requestId,
                 firstName = user.firstName,
                 lastName = user.lastName,
                 email = user.email,

@@ -27,15 +27,17 @@ class UserService(
     fun findByUsername(username: String) =
         userRepository.findByUsername(username = username) ?: throw Exception()
 
+    fun findByUsername(username: String, banList: MutableList<User>) = userRepository.findByUsernameExcludingBanList(username, banList)
 
     fun getUserDetailsResponse(user: User, username: String): UserDetailsResponse {
+
+
+
         val userRequested = findByUsername(username)
 
-        if (user.userId == null || userRequested.userId == null) throw Exception()
-
-        val isUserFollowingCaller = followRelationsRepository.existsByFollower_UserIdAndFollowing_UserId(follower = userRequested.userId, following = user.userId)
-        val isCallerFollowingUser = followRelationsRepository.existsByFollower_UserIdAndFollowing_UserId(follower = user.userId, following = userRequested.userId)
-        return User.mapToDto(userRequested, environmentUtil, isFollowingCaller = isUserFollowingCaller, isCallerFollowingUser)
+        val isUserFollowingCaller = followRelationsRepository.existsByFollowerAndFollowing(follower = userRequested, following = user)
+        val isCallerFollowingUser = followRelationsRepository.existsByFollowerAndFollowing(follower = user, following = userRequested)
+        return User.mapToUserDetailsDto(userRequested, environmentUtil, isFollowingCaller = isUserFollowingCaller, isCallerFollowingUser)
     }
 
 
@@ -44,9 +46,9 @@ class UserService(
     }*/
 
     fun banUser(username: String): Boolean {
-        userRepository.findByUsername(username)
-
-        // TODO: Implement a banning account system
+        val user = userRepository.findByUsername(username)
+        user!!.isAccountNonLocked = false
+        userRepository.save(user)
         return true
     }
 
@@ -63,12 +65,12 @@ class UserService(
         return if (user.profileImage == null){
             val image = imageService.uploadImage(file)
             user.profileImage = image
-            User.mapToDto(userRepository.save(user), environmentUtil, true, true)
+            User.mapToUserDetailsDto(userRepository.save(user), environmentUtil, true, true)
         }else {
             user.profileImage?.let {
                 imageService.changeImage(file, it)
             }
-            User.mapToDto(userRepository.save(user), environmentUtil, true, true)
+            User.mapToUserDetailsDto(userRepository.save(user), environmentUtil, true, true)
         }
     }
 
@@ -92,7 +94,7 @@ class UserService(
         }
         user.isProfilePublic = !user.isProfilePublic
         userRepository.save(user)
-        return User.mapToDto(user, environmentUtil, true, true)
+        return User.mapToUserDetailsDto(user, environmentUtil, true, true)
     }
 
 

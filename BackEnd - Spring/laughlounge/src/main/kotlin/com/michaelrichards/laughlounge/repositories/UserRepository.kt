@@ -1,10 +1,9 @@
 package com.michaelrichards.laughlounge.repositories
 
-import com.michaelrichards.laughlounge.model.following.BlockedUsers
 import com.michaelrichards.laughlounge.model.user.User
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import java.util.UUID
 
 @Repository
 interface UserRepository: JpaRepository<User, Long>{
@@ -13,9 +12,16 @@ interface UserRepository: JpaRepository<User, Long>{
     fun findByUsernameIgnoreCase(username: String): User?
 
 
+    @Query(
+        """select u from User u inner join u.usersBlockedMe usersBlockedMe
+where u.username = ?1 and u not in ?2"""
+    )
+    fun findByUsernameExcludingBanList(username: String, blockList: MutableCollection<User>): User
 
 
+    fun existsByEmailIgnoreCase(email: String): Boolean
 
-    fun findByEmailIgnoreCase(email: String): User?
+
+    fun existsByUsernameIgnoreCase(username: String): Boolean
 }
 

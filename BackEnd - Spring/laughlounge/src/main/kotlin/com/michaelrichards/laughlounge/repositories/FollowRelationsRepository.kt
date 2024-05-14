@@ -1,6 +1,7 @@
 package com.michaelrichards.laughlounge.repositories
 
 import com.michaelrichards.laughlounge.model.following.FollowRelations
+import com.michaelrichards.laughlounge.model.user.User
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -11,7 +12,10 @@ import java.util.*
 interface FollowRelationsRepository: JpaRepository<FollowRelations, UUID> {
 
 
-    fun existsByFollower_UserIdAndFollowing_UserId(follower: Long, following: Long): Boolean
+
+
+
+    fun existsByFollowerAndFollowing(follower: User, following: User): Boolean
 
 
     fun findByFollowing_UserId(userId: Long): List<FollowRelations>
@@ -25,6 +29,10 @@ interface FollowRelationsRepository: JpaRepository<FollowRelations, UUID> {
 
 
     fun findByFollower_UserId(userId: Long): List<FollowRelations>
+
+
+    @Query("select f from FollowRelations f where f.follower = ?1 and f.following = ?2")
+    fun findByFollowerAndFollowing(follower: User, following: User): FollowRelations?
 
 
     fun countByFollowing_UserId(userId: Long): Long

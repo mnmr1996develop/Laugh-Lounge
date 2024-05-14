@@ -24,6 +24,8 @@ class UserController(
         @PathVariable("username") username: String
     ): ResponseEntity<UserDetailsResponse> = ResponseEntity.ok().body(userService.getUserDetailsResponse(user = user,username= username))
 
+
+
     @PostMapping("{username}")
     fun uploadProfileImage(
         @AuthenticationPrincipal user: User,
